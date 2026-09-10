@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - BrasEq Almoço</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container" style="max-width: 1050px; height: 90vh; max-height: 850px;">
+        
+        <header class="app-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="index.html" class="admin-link-btn" title="Voltar para a Agenda Pública">
+                    <span class="material-icons">arrow_back</span>
+                    <span>Agenda</span>
+                </a>
+                <h1>Painel de Controle Administrador</h1>
+            </div>
+            <div id="user-header-area">
+                <span class="user-name" id="admin-user-name">Administrador</span>
+                <span class="admin-badge">ADMIN</span>
+                <button class="logout-btn" id="logout-btn" title="Sair do sistema">
+                    <span class="material-icons">logout</span>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="schedule-section" style="padding: 24px;">
+            
+            <!-- Grid de Controles Rápidos -->
+            <div class="admin-grid">
+                
+                <!-- Card 1: Bloqueio da Agenda -->
+                <div class="admin-card">
+                    <h2><span class="material-icons">lock</span> Status da Agenda</h2>
+                    <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 14px;">Controle se a agenda pública está liberada para novos agendamentos ou bloqueada.</p>
+                    <div class="status-box">
+                        <div class="status-info">
+                            <span>Estado:</span>
+                            <span id="agenda-status-tag" class="status-tag unlocked">LIBERADA</span>
+                        </div>
+                        <button id="toggle-lock-btn" class="btn btn-warning">Bloquear Agenda</button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Ações de Limpeza e Exportação -->
+                <div class="admin-card">
+                    <h2><span class="material-icons">settings</span> Ações Rápidas</h2>
+                    <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 14px;">Limpe os agendamentos do dia ou faça o download da planilha CSV completa.</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="clear-agenda-btn" class="btn btn-danger" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <span class="material-icons">delete_sweep</span> Limpar Agenda
+                        </button>
+                        <button id="export-csv-btn" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <span class="material-icons">file_download</span> Baixar CSV
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Grid de Cadastros -->
+            <div class="admin-grid">
+                
+                <!-- Card 3: Cadastrar Novo Horário -->
+                <div class="admin-card">
+                    <h2><span class="material-icons">add_alarm</span> Novo Horário de Almoço</h2>
+                    <form id="form-novo-horario">
+                        <div style="display: flex; gap: 10px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="horario-inicio">Início</label>
+                                <input type="time" id="horario-inicio" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="horario-fim">Fim</label>
+                                <input type="time" id="horario-fim" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px;">Adicionar Horário</button>
+                    </form>
+                </div>
+
+                <!-- Card 4: Cadastrar Novo Usuário -->
+                <div class="admin-card">
+                    <h2><span class="material-icons">person_add</span> Cadastrar Novo Usuário</h2>
+                    <form id="form-novo-user">
+                        <div class="form-group">
+                            <label for="novo-nome-user">Nome de Usuário</label>
+                            <input type="text" id="novo-nome-user" placeholder="Ex: joao.silva" required>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="nova-senha-user">Senha</label>
+                                <input type="password" id="nova-senha-user" placeholder="Senha segura" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="nova-permissao-user">Permissão</label>
+                                <select id="nova-permissao-user" required>
+                                    <option value="colaborador">Colaborador</option>
+                                    <option value="admin">Administrador</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px;">Criar Usuário</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- Tabela de Gerenciamento de Horários -->
+            <div class="admin-card" style="margin-bottom: 24px;">
+                <h2><span class="material-icons">access_time</span> Horários Cadastrados</h2>
+                <div style="overflow-x: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Horário de Início</th>
+                                <th>Horário de Fim</th>
+                                <th>Total de Ocupantes</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="horarios-table-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #64748b;">Carregando lista de horários...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabela de Gerenciamento de Usuários e Permissões -->
+            <div class="admin-card">
+                <h2><span class="material-icons">manage_accounts</span> Usuários Cadastrados & Permissões</h2>
+                <div style="overflow-x: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome de Usuário</th>
+                                <th>Permissão / Cargo</th>
+                                <th>Autenticação 2FA</th>
+                                <th>Data de Criação</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #64748b;">Carregando lista de usuários...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Modal para Editar Usuário -->
+    <div class="modal-overlay" id="modal-editar-user">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Editar Usuário</h2>
+                <button class="modal-close-btn" id="close-modal-edit-user">&times;</button>
+            </div>
+            <form id="form-editar-user">
+                <input type="hidden" id="edit-user-id">
+                <div class="form-group">
+                    <label for="edit-nome-user">Nome de Usuário</label>
+                    <input type="text" id="edit-nome-user" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-senha-user">Nova Senha (deixe em branco se não quiser alterar)</label>
+                    <input type="password" id="edit-senha-user" placeholder="Preencha para alterar a senha">
+                </div>
+                <div class="form-group">
+                    <label for="edit-permissao-user">Permissão / Cargo</label>
+                    <select id="edit-permissao-user" required>
+                        <option value="colaborador">Colaborador</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-modal-edit-user">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Horário -->
+    <div class="modal-overlay" id="modal-editar-horario">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Editar Horário de Almoço</h2>
+                <button class="modal-close-btn" id="close-modal-edit-horario">&times;</button>
+            </div>
+            <form id="form-editar-horario">
+                <input type="hidden" id="edit-horario-id">
+                <div style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="edit-horario-inicio">Horário de Início</label>
+                        <input type="time" id="edit-horario-inicio" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="edit-horario-fim">Horário de Fim</label>
+                        <input type="time" id="edit-horario-fim" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-modal-edit-horario">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Horário</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+    "name": "lucas.dias/agenda-almoco",
+    "require": {
+        "bramus/router": "^1.6",
+        "firebase/php-jwt": "*",
+        "robthree/twofactorauth": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "api/"
+        }
+    }
+}

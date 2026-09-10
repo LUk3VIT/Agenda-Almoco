@@ -1,0 +1,39 @@
+# Configuração de Segurança e Roteamento Apache para Agenda-Almoço BrasEq
+
+# 1. Restrição de Acesso Exclusivo à Rede Interna Corporativa BrasEq (Intranet IP Guard)
+<RequireAny>
+    Require ip 192.168.0.0/16
+    Require ip 10.0.0.0/8
+    Require ip 172.16.0.0/12
+    Require ip 127.0.0.1
+    Require ip ::1
+</RequireAny>
+
+# 2. Bloqueio de Acesso Direto a Arquivos Sensíveis
+<FilesMatch "^\.env|\.gitignore|Dockerfile|docker-compose|.*\.sql$|.*\.md$">
+    Require all denied
+</FilesMatch>
+
+# 3. Cabeçalhos de Segurança HTTP
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# 4. Roteamento Mod_Rewrite para a API PHP e Frontend Public
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    DirectoryIndex public/index.html index.html
+    
+    # Se a requisição for para /api e não for arquivo/diretório existente, envia para api/index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+
+    # Se acessar a raiz /, direciona para public/index.html
+    RewriteRule ^$ public/index.html [L]
+
+    # Se solicitar index.html ou admin.html na raiz, redireciona para public/
+    RewriteRule ^(index\.html|admin\.html)$ public/$1 [L]
+</IfModule>

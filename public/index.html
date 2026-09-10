@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrasEq - Almoço</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header class="app-header">
+            <h1>BrasEq - Almoço</h1>
+            <div id="user-header-area">
+                <!-- Renderizado dinamicamente pelo JavaScript: Botão Entrar ou Nome do Usuário + Sair -->
+                <button class="user-btn" id="open-login-modal-btn">
+                    <span class="material-icons">account_circle</span>
+                    <span>Entrar</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="schedule-section" id="schedule-container">
+            <!-- Os blocos de horário serão carregados dinamicamente via JavaScript -->
+            <div class="loading-state">Carregando horários...</div>
+        </main>
+
+        <div class="action-buttons">
+            <button class="action-btn download-btn" title="Baixar planilha de horários (Excel/CSV)" id="export-excel-btn" style="display: none;">
+                <span class="material-icons">file_download</span>
+            </button>
+            <button class="action-btn add-btn" title="Agendar Almoço" id="open-modal-btn">
+                <span class="material-icons">add</span>
+            </button>
+        </div>
+
+
+    </div>
+
+    <!-- Modal para Novo Agendamento -->
+    <div class="modal-overlay" id="modal-agendamento">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Novo Agendamento</h2>
+                <button class="modal-close-btn" id="close-modal-btn">&times;</button>
+            </div>
+            <form id="form-agendamento">
+                <div class="form-group">
+                    <label for="select-horario">Horário do Almoço</label>
+                    <select id="select-horario" required>
+                        <option value="">Selecione um horário...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="input-nome">Nome do Colaborador</label>
+                    <input type="text" id="input-nome" placeholder="Digite seu nome completo" required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-modal-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar Agendamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Login de Usuário -->
+    <div class="modal-overlay" id="modal-login">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Login de Usuário</h2>
+                <button class="modal-close-btn" id="close-login-modal-btn">&times;</button>
+            </div>
+            <form id="form-login">
+                <div class="form-group">
+                    <label for="login-nome">Nome de Usuário</label>
+                    <input type="text" id="login-nome" placeholder="Digite seu usuário" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-senha">Senha</label>
+                    <input type="password" id="login-senha" placeholder="Digite sua senha" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-login-modal-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Validação de 2FA (Microsoft Authenticator) -->
+    <div class="modal-overlay" id="modal-2fa">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Verificação 2FA</h2>
+                <button class="modal-close-btn" id="close-2fa-modal-btn">&times;</button>
+            </div>
+            <form id="form-2fa">
+                <p class="modal-desc">Abra o aplicativo <strong>Microsoft Authenticator</strong> no seu celular e digite o código de 6 dígitos:</p>
+                <div class="form-group">
+                    <input type="text" id="input-2fa-code" placeholder="000000" maxlength="6" class="otp-input" autocomplete="off" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-2fa-modal-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Validar Código</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Configuração Inicial Obrigatória do 2FA (Microsoft Authenticator) -->
+    <div class="modal-overlay" id="modal-setup-2fa">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Ativação Obrigatória 2FA</h2>
+                <button class="modal-close-btn" id="close-setup-modal-btn">&times;</button>
+            </div>
+            <form id="form-setup-2fa">
+                <div class="qr-container">
+                    <p class="modal-desc">Escaneie o QR Code abaixo com o <strong>Microsoft Authenticator</strong> no seu celular e digite o código de 6 dígitos para ativar sua conta:</p>
+                    <div class="qr-code-box" id="qr-code-box">
+                        <div id="qr-code-target"></div>
+                        <img id="qr-code-img" src="" alt="QR Code 2FA" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input-setup-2fa-code">Digite o código de 6 dígitos do app:</label>
+                    <input type="text" id="input-setup-2fa-code" placeholder="000000" maxlength="6" class="otp-input" autocomplete="off" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-setup-2fa-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="finish-setup-2fa-btn">Ativar 2FA e Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="js/qrcode.min.js"></script>
+    <script src="js/javaScript.js"></script>
+</body>
+</html>
