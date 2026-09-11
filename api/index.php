@@ -33,6 +33,7 @@ $router->post('/validar-2fa', 'App\Controllers\UserController@validar2FA');
 $router->post('/confirmar-setup-2fa', 'App\Controllers\UserController@confirmarSetup2FA');
 $router->get('/setup-2fa', 'App\Controllers\UserController@setup2FA');
 
+
 $router->set404(function() {
     http_response_code(404);
     echo json_encode(["status" => "erro", "mensagem" => "Rota não encontrada."]);
